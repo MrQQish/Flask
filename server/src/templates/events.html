@@ -1,0 +1,19 @@
+<!-- <div class="event_list" id = "event_list"> -->
+
+      {% if events is defined %}
+        {% for hash in events: %}
+
+          <tr>
+            <td>
+              <div class="form-check rows">
+                <!-- use an md5 hash to genereate the event ids  -->
+                <input class="form-check-input" type="checkbox" name="event_input" id="{{hash}}" value="{{hash}}">
+                <label class="form-check-label" for="{{hash}}">{{hash}}</label>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+
+<!-- </div> -->
+    

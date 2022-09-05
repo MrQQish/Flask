@@ -1,2 +1,6 @@
-Flask==1.1.1
-pika
+Flask
+numpy
+turbo_flask
+boto3
+zmq
+pymongo

@@ -1,0 +1,250 @@
+
+{% extends "menu.html" %}
+{% block content %}
+
+<!-- -------------------------------------------------------------------    SCRIPTS    ----------------------------------------------------------------------------- -->
+
+<script type="text/javascript">
+
+  ///////////////////////////////////////// SUBMIT INPUT FORM
+  function subForm (){                        
+    var form = $('#input')[0];
+    var fd = new FormData(form)
+
+    $.ajax({
+      method: 'POST',
+      url:'http://localhost:5000/uploader',
+      data: fd,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,   // tell jQuery not to set contentType
+      success:function(response)
+      {
+        console.log(response)
+      }
+    });
+  }
+
+  function subInput (){                        
+    var form = $('#input')[0];
+    var fd = new FormData(form)
+
+    $.ajax({
+      method: 'POST',
+      url:'http://localhost:5000/upload',
+      data: fd,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,   // tell jQuery not to set contentType
+      success:function(response)
+      {
+        console.log(response)
+      }
+    });
+  }
+
+  function getEvent (){                
+    var form = $('#events')[0];
+    var fd = new FormData(form)
+
+    $.ajax({
+      method: 'POST',
+      url:'http://localhost:5000/read_rainfile',
+      data: fd,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,   // tell jQuery not to set contentType
+      success:function(response)
+      {
+        console.log(response)
+      }
+    });
+  }
+
+  function deleteInput (){                
+    var form = $('#events')[0];
+    var fd = new FormData(form)
+
+    for(var pair of fd.entries()) {
+      console.log(pair[0]+ ', '+ pair[1]); 
+        $.ajax({
+          method: 'GET',
+          url:'http://localhost:5000/delete/bucket/' + pair[1],
+          success:function(response)
+          {
+            console.log(response)
+          }
+        });
+}
+  }
+
+  function downloadInput (){       
+    console.log("download not implemented fully sorry :(")
+  }
+
+  function sendTasks (){                
+    var form = $('#tasks')[0];
+    var fd = new FormData(form)
+
+    $.ajax({
+      method: 'POST',
+      url:'http://localhost:5000/send_tasks',
+      data: fd,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,   // tell jQuery not to set contentType
+      success:function(response)
+      {
+        console.log(response)
+      }
+    });
+  }
+  
+  function getWorkers (){                
+
+    $.ajax({
+      method: 'POST',
+      url:'http://localhost:5000/ping',
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,   // tell jQuery not to set contentType
+      success:function(response)
+      {
+        console.log(response)
+      }
+    });
+  }
+
+  function eventCheckBox(e) {
+    
+  if ($('#all').is(':checked')) {
+    console.log('change');
+  $('.rows').find('input[type="checkbox"]').prop('checked', true);
+} else {
+    $('.rows').find('input[type="checkbox"]').prop('checked', false);
+  }
+
+
+  
+  }
+
+
+
+
+
+
+</script>
+
+
+<!-- -------------------------------------------------------------------    CONTENT    ----------------------------------------------------------------------------- -->
+<br />
+<div class="fluid-container">
+  <div class="row">
+      
+    <div class="col-sm-1"></div>
+
+    <div class="col-sm-10">
+
+      <form onsubmit = "subInput(); getEvent(); return false;" id="input" method = "POST" name="input" enctype = "multipart/form-data">
+        <div class="input-group mb-3">
+                    
+          <input type="file" class="form-control" id="file" type = "file" name = "file">
+          <button type="submit" name="submit" class="input-group-text " for="file">Upload</button>
+          
+        </div>
+      </form> 
+
+      <form onsubmit = "getEvent(); return false;" method="POST" onsubmit="" id="events" name="events">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">
+              </th>
+            </tr>
+          </thead>
+          <tbody class="inputs" id = "inputs">
+          </tbody>
+        </table>
+
+        <div class="btn-group" role="group" aria-label="CRUD">
+          <button type="input-group-text" onclick="getEvent(); return false;" class="btn btn-light"> Read </button>
+          <button type="input-group-text" onclick="downloadInput(); return false;" class="btn btn-light"> Download </button>
+          <button type="input-group-text" onclick="deleteInput(); return false;" class="btn btn-light"> Delete </button>
+        </div>
+        
+      
+      </form>
+    </div> <!-- END CONTAINER 2 -->
+
+    <div class="col-sm-1"></div>
+  
+  </div> <!-- END ROW -->
+  <br />
+  <br />
+  <br />
+  <div class="row">
+    
+    <div class="col-sm-1"></div>
+
+    <div class="col-sm-10">
+          <!-- EVENT LIST IS RENDERED HERE AFTER FIRST SELECTION -->
+          <div id="toolbar">
+        </div>
+          <form onsubmit = "sendTasks(); return false;" method="POST" onsubmit="" id="tasks" name="tasks" >
+            <table class="table" id="table" data-response-handler="responseHandler">
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <input id="all" type="checkbox" onclick="eventCheckBox()"/> EVENTS LIST 
+                    <button onclick="sendTasks(); return false;" type="input-group-text" class="btn btn-light" style="float: right;">SEND TASKS</button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="event_list" id = "event_list">
+              </tbody>
+            </table>
+          
+          </form>
+
+
+
+      
+    </div> <!-- END CONTAINER 2 -->
+
+    <div class="col-sm-1"></div>
+  
+  </div>
+
+
+  
+  <br />
+  <br />
+  <br />
+  <div class="row">
+    
+    <div class="col-sm-1"></div>
+
+    <div class="col-sm-10">
+          <!-- EVENT LIST IS RENDERED HERE AFTER FIRST SELECTION -->
+          <div id="toolbar">
+        </div>
+            <table class="table" id="table" data-response-handler="responseHandler">
+              <thead>
+                <tr>
+                  <th scope="col">
+                     TASKS LIST             |   STATUS
+                     <button onclick="getWorkers(); return false;" type="input-group-text" class="btn btn-light" style="float: right;"> GET WORKERS </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="task_list" id = "task_list">
+              </tbody>
+            </table>
+    </div> <!-- END CONTAINER 2 -->
+
+    <div class="col-sm-1"></div>
+  
+  </div>
+
+  <!-- can natively read geojson -> importable from Github but look at how it can be done from static fils -->
+  <!-- <iframe src="https://kepler.gl/#/demo" style="border:0px #ffffff none;" name="myiFrame" scrolling="no" marginheight="0px" marginwidth="0px" height="800px" width="98x%" allowfullscreen></iframe> -->
+
+</div> <!-- END CONTAINER -->
+
+{% endblock %}
+    

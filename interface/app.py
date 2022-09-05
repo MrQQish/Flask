@@ -1,30 +1,36 @@
+# https://fastapi.tiangolo.com/deployment/docker/
 from flask import Flask
-import pika
+import time
+import zmq
+import threading
+
+# the first thing that will happend after initialising is a worker/interface will HTTP request a meeting
+# after meeting sharing the programs ID and the server will create a chatter thread (bi-directional server->worker unique)
+
+def chatter():
+    context = zmq.Context()
+    socket = context.socket(zmq.REP)
+    socket.bind("tcp://*:1000")
+    while True:
+        #  Wait for next request from client
+        message = socket.recv()
+        print("Received request: %s" % message)
+
+        #  Do some 'work'
+        time.sleep(1)
+
+        #  Send reply back to client
+        socket.send(b"World")
+
+threading.Thread(target=chatter).start()
+
 
 app = Flask(__name__)
 
-# main.py
-    
+# main.py    
 @app.route('/')
 def index():
     return 'OK'
-
-
-@app.route('/add-job/<cmd>')
-def add(cmd):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
-    channel = connection.channel()
-    channel.queue_declare(queue='task_queue', durable=True)
-    channel.basic_publish(
-        exchange='',
-        routing_key='task_queue',
-        body=cmd,
-        properties=pika.BasicProperties(
-            delivery_mode=2,  # make message persistent
-        ))
-    connection.close()
-    return " [x] Sent: %s" % cmd
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
