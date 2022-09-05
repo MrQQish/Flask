@@ -24,7 +24,7 @@ def registerWorker(IP):
             return jsonify({"ERROR": 1, "MESSAGE" : "failed to search IP in DB"})
         # launch the the new websocket thread 
         try:
-            channels.registerSocket(whisper_port)
+            channel_stack[whisper_port] = channels.WorkerChannel(whisper_port)
         except Exception as e:
             return jsonify({"ERROR": 1, "MESSAGE" : "failed to register socket on port %s" % whisper_port})
         
