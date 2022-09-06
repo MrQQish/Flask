@@ -5,6 +5,8 @@
     "version": "0.2.0",
     "configurations": [
 
+
+
         {
             "name": "Python: Server",
             "type": "python",
@@ -26,6 +28,22 @@
             "type": "python",
             "request": "launch",
             "program": "worker/test",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: PPQTestClient",
+            "type": "python",
+            "request": "launch",
+            "program": "worker/PPQtest_client.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: PPQTestServer",
+            "type": "python",
+            "request": "launch",
+            "program": "worker/PPQtest_router.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
