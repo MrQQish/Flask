@@ -7,24 +7,18 @@ from importlib.machinery import SourceFileLoader
 import threading
 import socket 
 
+from pathlib import Path
+import sys
+path = str(Path(__file__).parent.absolute())
+path = str(Path(Path(__file__).parent.absolute()).parent.absolute())
+path = str(Path(Path(Path(__file__).parent.absolute()).parent.absolute()).parent.absolute())
+sys.path.insert(0, path)
+from lib.config.config import INI
+import lib.PPQ as PPQ
+import lib.S3_CRUD as crud
+
 
 app = Flask(__name__)
-db = MongoClient().floodx
-context = zmq.Context()
-
-global ini 
-ini = json.loads(open("server/config.json", 'r').read())
-hostname = socket.gethostname()   
-IP = socket.gethostbyname(hostname)  
-ini["IP"] = IP
-
-global channel_stack 
-channel_stack = {}
-
-###################################################################
-from src import channels
-from src import routes
-
-channel_stack[ini["zeromq_port"]] = channels.TestChannel(ini["zeromq_port"])
+router = PPQ.Server()
 
 app.run(debug=False,  host='0.0.0.0')

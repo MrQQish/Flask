@@ -1,12 +1,6 @@
 version: '3'
 
 services:
-  
-  rabbitmq:
-    image: 'rabbitmq:3.6-management-alpine'
-    ports:
-      - '5672:5672'
-      - '15672:15672'
 
   worker:
     build: worker
@@ -21,3 +15,24 @@ services:
       - ./server:/app
     ports:
       - 5000:5000
+
+  localstack:
+    image: localstack/localstack-full
+    container_name: stack
+    ports:
+      - "53:53"
+      - "443:443"
+      - "4510-4520:4510-4520"
+      - "4566-4620:4566-4620"
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - "${TMPDIR:-/localstack/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./aws:/localstack/docker-entrypoint-initaws.d

@@ -22,30 +22,6 @@
             "program": "worker/app.py",
             "console": "integratedTerminal",
             "justMyCode": true
-        },
-        {
-            "name": "Python: Test",
-            "type": "python",
-            "request": "launch",
-            "program": "worker/test",
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "Python: PPQTestClient",
-            "type": "python",
-            "request": "launch",
-            "program": "worker/PPQtest_client.py",
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "Python: PPQTestServer",
-            "type": "python",
-            "request": "launch",
-            "program": "worker/PPQtest_router.py",
-            "console": "integratedTerminal",
-            "justMyCode": true
         }
     ]
 }
