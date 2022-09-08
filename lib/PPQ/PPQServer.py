@@ -38,7 +38,7 @@ class Server():
     def __init__ (s):
         s.context = zmq.Context()
         s.channel = ServerChannel(s.context)
-        s.router = Router()
+        s.router = RouterChannel(s.context)
 
 
 ###################################### TEST

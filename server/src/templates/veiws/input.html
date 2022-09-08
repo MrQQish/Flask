@@ -1,10 +1,10 @@
-<tbody class="inputs" id = "inputs">
-  {% for input in inputs.Contents: %}
+<tbody class="inputs" id = "inputs-veiw">
+  {% for input in inputs: %}
     <tr>
       <td>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" name="event_file" id="{{input.Key}}" value="{{input.Key}}">
-          <label class="form-check-label" for="{{input.Key}}">{{input.Key}}</label>
+          <label class="form-check-label" for="{{input.Key}}">{{input}}</label>
         </div>
       </td>
     </tr>

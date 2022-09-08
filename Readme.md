@@ -21,3 +21,6 @@ the actual cflood programs will emit to a local message
 
 
 # got to be able to trace/track threads to unregister sockets use either a array in context or try and figure a way to kill by thread identity 
+
+
+TODO add a dark mode  

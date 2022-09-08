@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+      <form onsubmit = "simpleForm('uploadInput', '#input'); return false;" id="input" method = "POST" name="input" enctype = "multipart/form-data">
+        <div class="input-group mb-3">
+                    
+          <input type="file" class="form-control" id="file" type = "file" name = "file">
+          <button type="submit" name="submit" class="input-group-text " for="file">Upload</button>
+          
+        </div>
+      </form> 
+
+      <form onsubmit = "getEvent(); return false;" method="POST" onsubmit="" id="events" name="events">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">
+              </th>
+            </tr>
+          </thead>
+          <tbody class="inputs-veiw" id = "inputs-veiw">
+          </tbody>
+        </table>
+
+        <div class="btn-group" role="group" aria-label="CRUD">
+          <button type="input-group-text" onclick="getEvent(); return false;" class="btn btn-light"> Read </button>
+          <button type="input-group-text" onclick="downloadInput(); return false;" class="btn btn-light"> Download </button>
+          <button type="input-group-text" onclick="deleteInput(); return false;" class="btn btn-light"> Delete </button>
+        </div>
+        
+      
+      </form>
+    </div> <!-- END CONTAINER 2 -->
+    <div class="col-sm-1"></div>
+  </div> <!-- END ROW -->
+  <br />
+  <br />
+  <br />
+

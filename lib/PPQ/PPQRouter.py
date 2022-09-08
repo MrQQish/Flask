@@ -5,6 +5,9 @@ import time
 import zmq
 import threading
 
+
+from .PPQChannel import *
+
 SERVER_IP = "192.168.15.50"
 HEARTBEAT_PORT = 1000
 
@@ -48,9 +51,8 @@ class WorkerQueue(object):
         address, worker = self.queue.popitem(False)
         return address
 
-class Router():
-    def __init__ (s):
-        s.context = zmq.Context()
+class RouterChannel(Channel):
+    def createSocket(s):
         # s.FlaskContext = FlaskContext
 
         s.frontend = s.context.socket(zmq.ROUTER) # ROUTER
@@ -68,58 +70,57 @@ class Router():
         s.workers = WorkerQueue()
 
         s.heartbeat_at = time.time() + HEARTBEAT_INTERVAL
+        
 
-        s.router_thread = threading.Thread(target=s.startRouter()).start()
+
+    def work(s):
+        if len(s.workers.queue) > 0:
+            poller = s.poll_both
+        else:
+            poller = s.poll_workers
 
 
-    def startRouter(s):
-        while True:
-            if len(s.workers.queue) > 0:
-                poller = s.poll_both
+        socks = dict(poller.poll(HEARTBEAT_INTERVAL * 1000))
+
+        # Handle worker activity on backend
+        if socks.get(s.backend) == zmq.POLLIN:
+
+            # Use worker address for LRU routing
+            frames = s.backend.recv_multipart()
+            if not frames:
+                s.alive = False
+
+
+            # re ready the worker in the queue
+            address = frames[0]
+            s.workers.ready(WorkerID(address))
+            print(address, frames)
+
+            # Validate control message, or return reply to client
+            msg = frames[1:]
+            if len(msg) == 1:
+                if msg[0] not in (PPP_READY, PPP_HEARTBEAT, PPP_ASSIGN):
+                    print("E: Invalid message from worker: %s" % msg)
             else:
-                poller = s.poll_workers
+                s.frontend.send_multipart(msg)
+
+            # Send heartbeats to idle workers if it's time
+            if time.time() >= s.heartbeat_at:
+                for worker in s.workers.queue:
+                    msg = [worker, PPP_HEARTBEAT]
+                    s.backend.send_multipart(msg)
+                s.heartbeat_at = time.time() + HEARTBEAT_INTERVAL
+        
+        if socks.get(s.frontend) == zmq.POLLIN:
+            frames = s.frontend.recv_multipart()
+            if not frames:
+                s.alive = False
+
+            frames.insert(0, s.workers.next())
+            s.backend.send_multipart(frames)
 
 
-            socks = dict(poller.poll(HEARTBEAT_INTERVAL * 1000))
-
-            # Handle worker activity on backend
-            if socks.get(s.backend) == zmq.POLLIN:
-
-                # Use worker address for LRU routing
-                frames = s.backend.recv_multipart()
-                if not frames:
-                    break
-
-                # re ready the worker in the queue
-                address = frames[0]
-                s.workers.ready(WorkerID(address))
-                print(address, frames)
-
-                # Validate control message, or return reply to client
-                msg = frames[1:]
-                if len(msg) == 1:
-                    if msg[0] not in (PPP_READY, PPP_HEARTBEAT, PPP_ASSIGN):
-                        print("E: Invalid message from worker: %s" % msg)
-                else:
-                    s.frontend.send_multipart(msg)
-
-                # Send heartbeats to idle workers if it's time
-                if time.time() >= s.heartbeat_at:
-                    for worker in s.workers.queue:
-                        msg = [worker, PPP_HEARTBEAT]
-                        s.backend.send_multipart(msg)
-                    s.heartbeat_at = time.time() + HEARTBEAT_INTERVAL
-            
-            if socks.get(s.frontend) == zmq.POLLIN:
-                frames = s.frontend.recv_multipart()
-                if not frames:
-                    break
-
-                frames.insert(0, s.workers.next())
-                s.backend.send_multipart(frames)
-
-
-            s.workers.purge()
+        s.workers.purge()
 
 
 ###################################### TEST

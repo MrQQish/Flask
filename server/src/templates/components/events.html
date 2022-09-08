@@ -1,0 +1,29 @@
+  <div class="row">
+    
+    <div class="col-sm-1"></div>
+
+    <div class="col-sm-10">
+          <!-- EVENT LIST IS RENDERED HERE AFTER FIRST SELECTION -->
+          <div id="toolbar">
+        </div>
+          <form onsubmit = "sendTasks(); return false;" method="POST" onsubmit="" id="tasks" name="tasks" >
+            <table class="table" id="table" data-response-handler="responseHandler">
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <input id="all" type="checkbox" onclick="eventCheckBox()"/> EVENTS LIST 
+                    <button onclick="sendTasks(); return false;" type="input-group-text" class="btn btn-light" style="float: right;">SEND TASKS</button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="event_list" id = "event_list">
+              </tbody>
+            </table>
+          
+          </form>
+    </div> <!-- END CONTAINER 2 -->
+    <div class="col-sm-1"></div>
+  </div>  
+  <br />
+  <br />
+  <br />

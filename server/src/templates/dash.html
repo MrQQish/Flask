@@ -1,250 +1,61 @@
+<!-- https://freefrontend.com/bootstrap-menus/ -->
+<!-- https://codepen.io/santanup789/pen/bGpVEEr -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+ <head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% extends "menu.html" %}
-{% block content %}
+   <title>FloodX</title>
 
-<!-- -------------------------------------------------------------------    SCRIPTS    ----------------------------------------------------------------------------- -->
+  <!-- scripts -->
+  <!-- BOOTSTRAP -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
-<script type="text/javascript">
+  <!-- REACT -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
 
-  ///////////////////////////////////////// SUBMIT INPUT FORM
-  function subForm (){                        
-    var form = $('#input')[0];
-    var fd = new FormData(form)
+  <!-- JQUERY -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
-    $.ajax({
-      method: 'POST',
-      url:'http://localhost:5000/uploader',
-      data: fd,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,   // tell jQuery not to set contentType
-      success:function(response)
-      {
-        console.log(response)
-      }
-    });
-  }
+   <!-- IMPORT -->
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">
+   <script src="{{ url_for('static', filename='js/endpoints.js') }}"></script>
 
-  function subInput (){                        
-    var form = $('#input')[0];
-    var fd = new FormData(form)
+   <script>
+    window.onload=function() {
+      console.log("INITIATING DASH");
+      initDash();
+      console.log("DASH INITIATED");
+    }
+  </script>
 
-    $.ajax({
-      method: 'POST',
-      url:'http://localhost:5000/upload',
-      data: fd,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,   // tell jQuery not to set contentType
-      success:function(response)
-      {
-        console.log(response)
-      }
-    });
-  }
-
-  function getEvent (){                
-    var form = $('#events')[0];
-    var fd = new FormData(form)
-
-    $.ajax({
-      method: 'POST',
-      url:'http://localhost:5000/read_rainfile',
-      data: fd,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,   // tell jQuery not to set contentType
-      success:function(response)
-      {
-        console.log(response)
-      }
-    });
-  }
-
-  function deleteInput (){                
-    var form = $('#events')[0];
-    var fd = new FormData(form)
-
-    for(var pair of fd.entries()) {
-      console.log(pair[0]+ ', '+ pair[1]); 
-        $.ajax({
-          method: 'GET',
-          url:'http://localhost:5000/delete/bucket/' + pair[1],
-          success:function(response)
-          {
-            console.log(response)
-          }
-        });
-}
-  }
-
-  function downloadInput (){       
-    console.log("download not implemented fully sorry :(")
-  }
-
-  function sendTasks (){                
-    var form = $('#tasks')[0];
-    var fd = new FormData(form)
-
-    $.ajax({
-      method: 'POST',
-      url:'http://localhost:5000/send_tasks',
-      data: fd,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,   // tell jQuery not to set contentType
-      success:function(response)
-      {
-        console.log(response)
-      }
-    });
-  }
-  
-  function getWorkers (){                
-
-    $.ajax({
-      method: 'POST',
-      url:'http://localhost:5000/ping',
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,   // tell jQuery not to set contentType
-      success:function(response)
-      {
-        console.log(response)
-      }
-    });
-  }
-
-  function eventCheckBox(e) {
-    
-  if ($('#all').is(':checked')) {
-    console.log('change');
-  $('.rows').find('input[type="checkbox"]').prop('checked', true);
-} else {
-    $('.rows').find('input[type="checkbox"]').prop('checked', false);
-  }
+ </head>
+  <body>
+    {{ turbo() }}
+    <br />
+    <br />
+    <div id="container" name="container" class="fluid-container">
+        <span id="inputs-component"></span>
+        <span id="events-component"></span>
+        <span id="workers-component"></span>
+    </div>
+  </body>
+</html>
 
 
-  
-  }
+<!-- 
+{% macro create_block(title, message) %}
+    <h1>{{title}}</h1>
+    <p class="important">
+      {{message}}
+    </p>
+{% endmacro %}
 
-
-
-
-
-
-</script>
-
-
-<!-- -------------------------------------------------------------------    CONTENT    ----------------------------------------------------------------------------- -->
-<br />
-<div class="fluid-container">
-  <div class="row">
-      
-    <div class="col-sm-1"></div>
-
-    <div class="col-sm-10">
-
-      <form onsubmit = "subInput(); getEvent(); return false;" id="input" method = "POST" name="input" enctype = "multipart/form-data">
-        <div class="input-group mb-3">
-                    
-          <input type="file" class="form-control" id="file" type = "file" name = "file">
-          <button type="submit" name="submit" class="input-group-text " for="file">Upload</button>
-          
-        </div>
-      </form> 
-
-      <form onsubmit = "getEvent(); return false;" method="POST" onsubmit="" id="events" name="events">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">
-              </th>
-            </tr>
-          </thead>
-          <tbody class="inputs" id = "inputs">
-          </tbody>
-        </table>
-
-        <div class="btn-group" role="group" aria-label="CRUD">
-          <button type="input-group-text" onclick="getEvent(); return false;" class="btn btn-light"> Read </button>
-          <button type="input-group-text" onclick="downloadInput(); return false;" class="btn btn-light"> Download </button>
-          <button type="input-group-text" onclick="deleteInput(); return false;" class="btn btn-light"> Delete </button>
-        </div>
-        
-      
-      </form>
-    </div> <!-- END CONTAINER 2 -->
-
-    <div class="col-sm-1"></div>
-  
-  </div> <!-- END ROW -->
-  <br />
-  <br />
-  <br />
-  <div class="row">
-    
-    <div class="col-sm-1"></div>
-
-    <div class="col-sm-10">
-          <!-- EVENT LIST IS RENDERED HERE AFTER FIRST SELECTION -->
-          <div id="toolbar">
-        </div>
-          <form onsubmit = "sendTasks(); return false;" method="POST" onsubmit="" id="tasks" name="tasks" >
-            <table class="table" id="table" data-response-handler="responseHandler">
-              <thead>
-                <tr>
-                  <th scope="col">
-                    <input id="all" type="checkbox" onclick="eventCheckBox()"/> EVENTS LIST 
-                    <button onclick="sendTasks(); return false;" type="input-group-text" class="btn btn-light" style="float: right;">SEND TASKS</button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="event_list" id = "event_list">
-              </tbody>
-            </table>
-          
-          </form>
-
-
-
-      
-    </div> <!-- END CONTAINER 2 -->
-
-    <div class="col-sm-1"></div>
-  
-  </div>
-
-
-  
-  <br />
-  <br />
-  <br />
-  <div class="row">
-    
-    <div class="col-sm-1"></div>
-
-    <div class="col-sm-10">
-          <!-- EVENT LIST IS RENDERED HERE AFTER FIRST SELECTION -->
-          <div id="toolbar">
-        </div>
-            <table class="table" id="table" data-response-handler="responseHandler">
-              <thead>
-                <tr>
-                  <th scope="col">
-                     TASKS LIST             |   STATUS
-                     <button onclick="getWorkers(); return false;" type="input-group-text" class="btn btn-light" style="float: right;"> GET WORKERS </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="task_list" id = "task_list">
-              </tbody>
-            </table>
-    </div> <!-- END CONTAINER 2 -->
-
-    <div class="col-sm-1"></div>
-  
-  </div>
-
-  <!-- can natively read geojson -> importable from Github but look at how it can be done from static fils -->
-  <!-- <iframe src="https://kepler.gl/#/demo" style="border:0px #ffffff none;" name="myiFrame" scrolling="no" marginheight="0px" marginwidth="0px" height="800px" width="98x%" allowfullscreen></iframe> -->
-
-</div> <!-- END CONTAINER -->
-
-{% endblock %}
-    
+{% for title, message in list %}
+    {{ create_block(title, message) }}
+{% endfor %} -->

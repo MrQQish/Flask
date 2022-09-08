@@ -1,0 +1,16 @@
+
+<tbody class="workers" id = "workers">  
+  {% if worker_list is defined %}
+    {% for worker in worker_list: %}
+      <tr>
+        <td>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="event_input" id="{{worker}}" value="{{worker}}">
+            <label class="form-check-label" for="{{worker}}">{{worker}}</label>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+  {% endif %}
+</tbody>
+  
