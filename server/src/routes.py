@@ -45,17 +45,23 @@ def home():
 
 
 
-################################################# INPUT API 
+################################################# FILE API 
 # https://blog.miguelgrinberg.com/post/handling-file-uploads-with-flask
 # should be connected to the an S3 buck on AWS or localstack
-@app.route('/uploadInput', methods = ['GET', 'POST'])
+# need the ability to upload from local file or from bytestream 
+# need to be able to copy
+@app.route('/upload/<bucket>/<key>', methods = ['POST'])
 @stateChange
 def uploadInput():
     f = request.files['file'] # File in react
     if (not os.path.isdir(path)):
         os.makedirs(os.path.join('data/inputs'))
     f.save(os.path.join('data/inputs', f.filename))
-    return '{"error" : "0"}'
+    file =  open(os.path.join('data/inputs', f.filename), "rb") 
+
+    return crud.upload(file)
+    # return '{"error" : "0"}'
+
 
 @app.route('/getInputs', methods = ['GET', 'POST'])
 def getInputs():
@@ -100,33 +106,24 @@ def get_workers():
         return '{"error" : "0"}'
 
 
-###############################################################  CRUD API
+@app.route('/download/<bucket>/<key>', methods=['GET'])
+def download(bucket, key):
+    return crud.download(bucket,key)
 
-# @app.route('/upload', methods=['POST'])
-# @stateChange
-# def upload():    
-#     f = request.files['file'] # File in react
-#     path = os.path.join('./data/inputs', f.filename)
-#     f.save(path)
-
-#     file = open(path)
-#     return crud.upload(file)
-
-
-# @app.route('/download/<bucket>/<key>', methods=['GET'])
-# def download(bucket, key):
-#     return crud.download(bucket,key)
+#@app.route('/download/<bucket>/<key>', methods=['GET'])
+#def download(bucket, key):
+ #   return crud.download(bucket,key)
 
 
 
-# @app.route('/delete/<bucket>/<key>', methods=['GET'])
-# @stateChange
-# def delete(bucket, key): 
-#     return crud.delete(bucket,key)
+@app.route('/delete/<bucket>/<key>', methods=['GET'])
+@stateChange
+def delete(bucket, key): 
+    return crud.delete(bucket,key)
 
 
-# @app.route('/list/<bucket>', methods=['GET'])
-# def list(bucket): 
-#     results = crud.list(bucket)
-#     return '{"list":"0"}'
+@app.route('/list/<bucket>', methods=['GET'])
+def list(bucket): 
+    results = crud.list(bucket)
+    return '{"list":"0"}'
 

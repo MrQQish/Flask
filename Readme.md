@@ -24,3 +24,8 @@ the actual cflood programs will emit to a local message
 
 
 TODO add a dark mode  
+
+
+
+
+input CRAIN FILE ->  File gets read in 

@@ -1,6 +1,15 @@
 
 var endpoint = 'http://localhost:5000/'
 
+
+
+async function initDash() {
+    await sleep(1000); // annoying but necessary maybe add a loading wheel??
+    simpleRequest('getComponents');
+    simpleRequest('updateComponents');
+}
+
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -44,12 +53,6 @@ function simpleForm(url_, id_) {
             console.log(response)
         }
         });
-}
-
-async function initDash() {
-    await sleep(1000); // annoying but necessary maybe add a loading wheel??
-    simpleRequest('getComponents');
-    simpleRequest('updateComponents');
 }
 
 

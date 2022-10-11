@@ -6,7 +6,7 @@ import tempfile
 from boto3.session import Session
 
 #  awslocal s3 mb s3://bucket on first load 
-os.environ['LOCALSTACK_S3_ENDPOINT_URL'] = 'http://localstack:4566'
+os.environ['LOCALSTACK_S3_ENDPOINT_URL'] = 'http://localhost:4566'
 os.environ['AWS_ACCESS_KEY_ID'] = 'guest'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'guest'
 os.environ['AWS_DEFAULT_REGION'] = 'ap-southeast-2'
@@ -23,13 +23,13 @@ else:
 
 
 def upload(file):
-    s3.Bucket('bucket').put_object(Key=os.path.basename(file.name), Body=file.read())
+    s3.Bucket('bucket').upload_file(file.name, os.path.basename(file.name))
 
     return '{"upload" : "0"}'
 
 
 def download(bucket, key): 
-    s3.Bucket(bucket).download_file(key, '/data/' + str(key))
+    s3.Bucket('bucket').download_file(key, '/data/' + str(key))
     return '{"download" : "0"}'
 
 
